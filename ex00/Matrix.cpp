@@ -20,6 +20,26 @@ Matrix::Matrix(const vector<vector<double>> &from)
     this->_matrix = from;
 }
 
+Matrix::Matrix(const std::initializer_list<std::initializer_list<double>> &list)
+{
+    if (list.size() == 0)
+        return;
+    for (const auto& row : list)
+    {
+        this->_matrix.push_back(row);
+    }
+    size_t row_size = this->_matrix[0].size();
+
+    for (size_t i = 0; i < this->_matrix.size(); ++i)
+    {
+        if (row_size != this->_matrix[i].size())
+        {
+            this->_matrix.clear();
+            throw std::runtime_error(NOT_RECTANGLE);
+        }
+    }
+}
+
 Matrix::~Matrix()
 {
     this->_matrix.clear();
@@ -73,4 +93,43 @@ ostream& operator<<(ostream &os, const Matrix &matrix)
         os << endl;
     }
     return os;
+}
+
+void Matrix::add(const Matrix &other)
+{
+    if (this->get_shape() != other.get_shape())
+        throw std::runtime_error(DIFF_MATRIX_SIZES);
+    
+    for (size_t i = 0; i < this->_matrix.size(); ++i)
+    {
+        for (size_t j = 0; j < this->_matrix[i].size(); ++j)
+        {
+            this->_matrix[i][j] += other._matrix[i][j];
+        }
+    }
+}
+
+void Matrix::sub(const Matrix &other)
+{
+    if (this->get_shape() != other.get_shape())
+        throw std::runtime_error(DIFF_MATRIX_SIZES);
+    
+    for (size_t i = 0; i < this->_matrix.size(); ++i)
+    {
+        for (size_t j = 0; j < this->_matrix[i].size(); ++j)
+        {
+            this->_matrix[i][j] -= other._matrix[i][j];
+        }
+    }
+}
+
+void Matrix::scl(const double multiplier)
+{    
+    for (size_t i = 0; i < this->_matrix.size(); ++i)
+    {
+        for (size_t j = 0; j < this->_matrix[i].size(); ++j)
+        {
+            this->_matrix[i][j] *= multiplier;
+        }
+    }
 }
