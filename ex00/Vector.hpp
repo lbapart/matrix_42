@@ -19,4 +19,5 @@ class Vector
         size_t                  get_size() const;
         void                    print() const;
         const vector<double>    get_vector() const;
+        friend ostream& operator<<(ostream &os, const Vector &vector);
 };

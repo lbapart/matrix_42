@@ -38,3 +38,13 @@ const vector<double>  Vector::get_vector() const
 {
     return this->_vector;
 }
+
+ostream& operator<<(ostream &os, const Vector &vector)
+{
+    for (size_t i = 0; i < vector._vector.size(); ++i)
+    {
+        os << vector._vector[i] << " ";
+    }
+    os << std::endl;
+    return os;
+}

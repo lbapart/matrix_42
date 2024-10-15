@@ -61,3 +61,16 @@ const vector<vector<double>>  Matrix::get_matrix() const
 {
     return this->_matrix;
 }
+
+ostream& operator<<(ostream &os, const Matrix &matrix)
+{
+    for (size_t i = 0; i < matrix._matrix.size(); ++i)
+    {
+        for (size_t j = 0; j < matrix._matrix[i].size(); ++j)
+        {
+            os << setw(WIDTH) << matrix._matrix[i][j] << " ";
+        }
+        os << endl;
+    }
+    return os;
+}

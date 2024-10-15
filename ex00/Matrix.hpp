@@ -24,4 +24,5 @@ class Matrix
         bool                          is_square() const;
         void                          print() const;
         const vector<vector<double>>  get_matrix() const;
+        friend ostream& operator<<(ostream &os, const Matrix &matrix);
 };
