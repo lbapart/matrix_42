@@ -7,7 +7,7 @@ void test_linear_combination() {
     {
         Vector v1({1.0, 2.0});
         Vector v2({3.0, 4.0});
-        vector<Vector> vectors;
+        vector<Vector<double>> vectors;
         vectors.push_back(v1);
         vectors.push_back(v2);
         initializer_list<double> scalars = {2.0, 3.0};
@@ -26,7 +26,7 @@ void test_linear_combination() {
     {
         Vector v1({1.0, 2.0});
         Vector v2({3.0, 4.0});
-        vector<Vector> vectors = {v1, v2};
+        vector<Vector<double>> vectors = {v1, v2};
         initializer_list<double> scalars = {2.0};
 
         try {
@@ -41,7 +41,7 @@ void test_linear_combination() {
     {
         Vector v1({1.0, 2.0});
         Vector v2({3.0, 4.0, 5.0});
-        vector<Vector> vectors = {v1, v2};
+        vector<Vector<double>> vectors = {v1, v2};
         initializer_list<double> scalars = {2.0, 3.0};
 
         try {

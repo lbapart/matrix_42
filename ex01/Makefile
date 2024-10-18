@@ -4,7 +4,7 @@ CC=clang++ -std=c++20
 
 CFLAGS=
 
-SRCS= main.cpp Matrix.cpp Vector.cpp
+SRCS= main.cpp
 OBJS=$(SRCS:.cpp=.o)
 
 all: $(NAME)

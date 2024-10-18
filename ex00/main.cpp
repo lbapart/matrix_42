@@ -2,8 +2,8 @@
 #include "Matrix.hpp"
 
 int main() {
-    Vector u = {2., 3.};
-    Vector v = {5., 7.};
+    Vector<double> u = {2., 3.};
+    Vector<double> v = {5., 7.};
     u.add(v);
     std::cout << u << std::endl;
     // 7 10
@@ -19,8 +19,8 @@ int main() {
     std::cout << u << std::endl;
     // 4 6
 
-    Matrix mu = {{1., 2.}, {3., 4.}};
-    Matrix mv = {{7., 4.}, {-2., 2.}};
+    Matrix<double> mu = {{1., 2.}, {3., 4.}};
+    Matrix<double> mv = {{7., 4.}, {-2., 2.}};
     mu.add(mv);
     std::cout << mu << std::endl;
     // [8, 6]
