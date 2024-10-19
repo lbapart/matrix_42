@@ -4,7 +4,9 @@
 #include <vector>
 #include <stdexcept>
 #include <initializer_list>
+#include <cmath>
 #include "Matrix.hpp"
+#include "Utils.hpp"
 
 #define DIFF_VECTOR_SIZES "Sizes of vectors should be equal"
 #define DIFF_SCALAR_AND_VECTOR "Number of vectors should be the same as number of scalars"
@@ -35,6 +37,9 @@ class Vector
         void add(const Vector &other);
         void sub(const Vector &other);
         void scl(const T multiplier);
+        double norm_1() const;
+        double norm() const;
+        double norm_inf() const;
         T dot(const Vector &other) const;
 
         template<typename U>
@@ -218,6 +223,35 @@ T Vector<T>::dot(const Vector<T> &other) const
         result += this->_vector[i] * other._vector[i];
     }
     return result;
+}
+
+template<typename T>
+double Vector<T>::norm_1() const
+{
+    double result = 0;
+
+    for (size_t i = 0; i < this->_vector.size(); ++i)
+    {
+        result += this->_vector[i];
+    }
+    return result;
+}
+
+template<typename T>
+double Vector<T>::norm() const
+{
+    double summ = 0;
+    for (size_t i = 0; i < this->_vector.size(); ++i)
+    {
+        summ += pow(this->_vector[i], 2);
+    }
+    return pow(summ, 0.5);
+}
+
+template<typename T>
+double Vector<T>::norm_inf() const
+{
+    
 }
 
 template<typename T>

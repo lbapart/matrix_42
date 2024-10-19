@@ -27,4 +27,10 @@ namespace utils
             throw e;
         }
     }
+
+    template<typename T>
+    T abs(const T num)
+    {
+        return num > 0 ? num : -num;
+    }
 }
