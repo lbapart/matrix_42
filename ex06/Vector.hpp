@@ -41,6 +41,7 @@ class Vector
         double norm() const;
         double norm_inf() const;
         T dot(const Vector &other) const;
+        Vector get_normalized_vector() const;
 
         template<typename U>
         friend ostream &operator<<(ostream &os, const Vector<U> &vector);
@@ -254,6 +255,15 @@ double Vector<T>::norm_inf() const
     return this->_get_greatest_element_abs();
 }
 
+template<typename T>
+Vector<T> Vector<T>::get_normalized_vector() const
+{
+    auto norm = this->norm();
+
+    Vector result = *this * (1 / norm);
+    return result;
+}
+
 // Additional functions
 template<typename T>
 Vector<T> linear_combination(const vector<Vector<T>> &vectors, const initializer_list<T> &scalars)
@@ -287,4 +297,19 @@ const double angle_cos(const Vector<T>& first, const Vector<T>& second)
     if (norms_sum == 0)
         throw std::runtime_error(DIVISION_BY_ZERO);
     return (double)dot_product / norms_sum;
+}
+
+template<typename T>
+Vector<T> cross_product(const Vector<T>& first, const Vector<T> &second)
+{
+    if (first.get_size() != 3 || second.get_size() != 3)
+        throw std::runtime_error(RUNTIME_ERROR);
+
+    vector<T> first_vec = first.get_vector();
+    vector<T> second_vec = second.get_vector();
+    return Vector<T>({
+        first_vec[1] * second_vec[2] - first_vec[2] * second_vec[1],
+        first_vec[2] * second_vec[0] - first_vec[0] * second_vec[2],
+        first_vec[0] * second_vec[1] - first_vec[1] * second_vec[0]
+    });
 }
