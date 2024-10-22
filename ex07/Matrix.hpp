@@ -5,6 +5,7 @@
 #include <stdexcept>
 #include <iomanip>
 #include <initializer_list>
+#include "Vector.hpp"
 
 #define NOT_RECTANGLE "Matrix should be a rectangle"
 #define DIFF_MATRIX_SIZES "Sizes of the matrices should be equal"
@@ -20,6 +21,7 @@ class Matrix
 
     public:
         Matrix();
+        Matrix(size_t row, size_t col);
         Matrix(const vector<vector<T>> &from);
         Matrix(const std::initializer_list<std::initializer_list<T>> &list);
         Matrix(const Matrix &other);
@@ -29,13 +31,16 @@ class Matrix
         Matrix operator*(const T scalar) const;
         Matrix &operator*=(const T scalar);
         ~Matrix();
-        const pair<size_t, size_t> get_shape() const;
-        bool is_square() const;
-        void print() const;
-        const vector<vector<T>> get_matrix() const;
-        void add(const Matrix &other);
-        void sub(const Matrix &other);
-        void scl(const T multiplier);
+        Vector<T>                   to_vector();
+        const pair<size_t, size_t>  get_shape() const;
+        bool                        is_square() const;
+        void                        print() const;
+        const vector<vector<T>>     get_matrix() const;
+        void                        add(const Matrix &other);
+        void                        sub(const Matrix &other);
+        void                        scl(const T multiplier);
+        Matrix                      mul_mat(const Matrix& other);
+        Vector<T>                   mul_vec(const Vector<T>& other);
 
         template<typename U>
         friend ostream &operator<<(ostream &os, const Matrix<U> &matrix);
@@ -89,9 +94,30 @@ Matrix<T>::Matrix(const Matrix &other)
 }
 
 template<typename T>
+Matrix<T>::Matrix(size_t row, size_t col)
+{
+    this->_matrix = vector<vector<T>>(row, vector<T>(col));
+}
+
+template<typename T>
 Matrix<T>::~Matrix()
 {
     this->_matrix.clear();
+}
+
+template<typename T>
+Vector<T> Matrix<T>::to_vector()
+{
+    auto shape = this->get_shape();
+    if (shape.second != 1)
+        throw std::runtime_error(RUNTIME_ERROR);
+
+    vector<T> init_list;
+    for (size_t i = 0; i < shape.first; ++i)
+    {
+        init_list.push_back(this->_matrix[i][0]);
+    }
+    return Vector(init_list);
 }
 
 template<typename T>
@@ -258,4 +284,48 @@ void Matrix<T>::scl(const T multiplier)
             this->_matrix[i][j] *= multiplier;
         }
     }
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::mul_mat(const Matrix<T>& other)
+{
+    auto this_shape = this->get_shape();
+    auto other_shape = other.get_shape();
+
+    if (this_shape.second != other_shape.first)
+        throw std::runtime_error(RUNTIME_ERROR);
+
+    Matrix<T> result(this_shape.first, other_shape.second);
+
+    for (size_t i = 0; i < this_shape.first; ++i)
+    {
+        for (size_t j = 0; j < other_shape.second; ++j)
+        {
+            for (size_t k = 0; k < this_shape.second; ++k)
+            {
+                result._matrix[i][j] += this->_matrix[i][k] * other._matrix[k][j];
+            }
+        }
+    }
+    return result;
+}
+
+template<typename T>
+Vector<T> Matrix<T>::mul_vec(const Vector<T>& other)
+{
+    auto shape = this->get_shape();
+    if (shape.second != other.get_size())
+        throw std::runtime_error(RUNTIME_ERROR);
+    
+    Matrix<T> result(shape.first, 1);
+
+    for (size_t i = 0; i < shape.first; ++i)
+    {
+        for (size_t k = 0; k < shape.second; ++k)
+        {
+            result._matrix[i][0] += this->_matrix[i][k] * other.get_vector()[k];
+        }
+    }
+
+    return result.to_vector();
 }

@@ -260,6 +260,8 @@ Vector<T> Vector<T>::get_normalized_vector() const
 {
     auto norm = this->norm();
 
+    if (norm == 0)
+        throw std::runtime_error(DIVISION_BY_ZERO);
     Vector result = *this * (1 / norm);
     return result;
 }
