@@ -42,6 +42,7 @@ class Matrix
         Matrix                      mul_mat(const Matrix& other);
         Vector<T>                   mul_vec(const Vector<T>& other);
         const T                     trace() const;
+        Matrix                      transpose() const;
 
         template<typename U>
         friend ostream &operator<<(ostream &os, const Matrix<U> &matrix);
@@ -342,6 +343,22 @@ const T Matrix<T>::trace() const
     for (size_t i = 0; i < shape.first; ++i)
     {
         result += this->_matrix[i][i];
+    }
+    return result;
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::transpose() const
+{
+    auto shape = this->get_shape();
+    Matrix result(shape.second, shape.first);
+
+    for (size_t i = 0; i < shape.second; ++i)
+    {
+        for (size_t j = 0; j < shape.first; ++j)
+        {
+            result._matrix[i][j] = this->_matrix[j][i];
+        }
     }
     return result;
 }
