@@ -17,8 +17,8 @@ template<typename T>
 class Vector
 {
     private:
-        vector<T> _vector;
-
+        vector<T>   _vector;
+        T           _get_greatest_element_abs() const;
     public:
         Vector();
         Vector(const vector<T> &from);
@@ -251,7 +251,7 @@ double Vector<T>::norm() const
 template<typename T>
 double Vector<T>::norm_inf() const
 {
-    
+    return this->_get_greatest_element_abs();
 }
 
 template<typename T>
@@ -273,4 +273,16 @@ Vector<T> linear_combination(const vector<Vector<T>> &vectors, const initializer
         result.add(cur_vector);
     }
     return result;
+}
+
+template<typename T>
+T Vector<T>::_get_greatest_element_abs() const
+{
+    T greatest = 0;
+    for (size_t i = 0; i < this->_vector.size(); ++i)
+    {
+        if (abs(this->_vector[i]) > abs(greatest))
+            greatest = abs(this->_vector[i]);
+    }
+    return greatest;
 }
