@@ -17,7 +17,9 @@ template<typename T>
 class Matrix
 {
     private:
-        vector<vector<T>> _matrix;
+        vector<vector<T>>   _matrix;
+        void                _add_row(size_t affected, size_t to_add, double scalar);
+        void                _put_non_zero_rows_on_top(size_t row, size_t col);
 
     public:
         Matrix();
@@ -43,6 +45,7 @@ class Matrix
         Vector<T>                   mul_vec(const Vector<T>& other);
         const T                     trace() const;
         Matrix                      transpose() const;
+        Matrix                      row_echelon() const;
 
         template<typename U>
         friend ostream &operator<<(ostream &os, const Matrix<U> &matrix);
@@ -361,4 +364,20 @@ Matrix<T> Matrix<T>::transpose() const
         }
     }
     return result;
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::row_echelon() const
+{
+    auto shape = this->get_shape();
+    double scalar;
+
+    Matrix result(*this);
+    for (size_t i = 0; i < shape.first && shape < shape.second; ++i)
+    {
+        for (size_t j = i + 1; j < shape.first && j < shape.second; ++j)
+        {
+            
+        }
+    }
 }
