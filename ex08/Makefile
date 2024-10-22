@@ -1,4 +1,4 @@
-NAME=ex07
+NAME=ex08
 
 CC=clang++ -std=c++20
 

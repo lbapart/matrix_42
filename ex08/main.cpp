@@ -1,62 +1,60 @@
 #include "Matrix.hpp"
-#include "Vector.hpp"
 #include <iostream>
 
-void test_matrix_multiplication() {
-    // Test 1: Matrix multiplication
+void test_matrix_trace() {
+    // Test 1: Trace of a 2x2 matrix
     {
-        Matrix<double> mat1 = {{1.0, 2.0}, {3.0, 4.0}};
-        Matrix<double> mat2 = {{2.0, 0.0}, {1.0, 2.0}};
-        Matrix<double> result = mat1.mul_mat(mat2);
-        Matrix<double> expected = {{4.0, 4.0}, {10.0, 8.0}};
+        Matrix<double> mat = {{1.0, 2.0}, {3.0, 4.0}};
+        double result = mat.trace();
+        double expected = 5.0; // 1 + 4
 
-        if (result.get_matrix() == expected.get_matrix()) {
+        if (result == expected) {
             std::cout << "Test 1 passed." << std::endl;
         } else {
             std::cout << "Test 1 failed." << std::endl;
         }
     }
 
-    // Test 2: Matrix multiplication with incompatible sizes (should throw an exception)
+    // Test 2: Trace of a 3x3 matrix
     {
-        Matrix<double> mat1 = {{2.0, 0.0, 1.0}, {1.0, 2.0, 3.0}};
-        Matrix<double> mat2 = {{1.0, 2.0}, {3.0, 4.0}};
-        try {
-            Matrix<double> result = mat1.mul_mat(mat2);
-            std::cout << "Test 2 failed." << std::endl;
-        } catch (const std::runtime_error& e) {
+        Matrix<double> mat = {{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}, {7.0, 8.0, 9.0}};
+        double result = mat.trace();
+        double expected = 15.0; // 1 + 5 + 9
+
+        if (result == expected) {
             std::cout << "Test 2 passed." << std::endl;
-        }
-    }
-
-    // Test 3: Matrix-vector multiplication
-    {
-        Matrix<double> mat = {{1.0, 2.0}, {3.0, 4.0}};
-        Vector<double> vec = {2.0, 1.0};
-        Vector<double> result = mat.mul_vec(vec);
-        Vector<double> expected = {4.0, 10.0};
-
-        if (result.get_vector() == expected.get_vector()) {
-            std::cout << "Test 3 passed." << std::endl;
         } else {
-            std::cout << "Test 3 failed." << std::endl;
+            std::cout << "Test 2 failed." << std::endl;
         }
     }
 
-    // Test 4: Matrix-vector multiplication with incompatible sizes (should throw an exception)
+    // Test 3: Trace of a non-square matrix (should throw an exception)
     {
-        Matrix<double> mat = {{1.0, 2.0}, {3.0, 4.0}};
-        Vector<double> vec = {2.0, 1.0, 3.0};
+        Matrix<double> mat = {{1.0, 2.0, 3.0}, {4.0, 5.0, 6.0}};
         try {
-            Vector<double> result = mat.mul_vec(vec);
-            std::cout << "Test 4 failed." << std::endl;
+            double result = mat.trace();
+            std::cout << "Test 3 failed." << std::endl;
         } catch (const std::runtime_error& e) {
-            std::cout << "Test 4 passed." << std::endl;
+            std::cout << "Test 3 passed." << std::endl;
         }
     }
+
+    // Test 4: Trace of a 1x1 matrix
+    {
+        Matrix<double> mat = {{42.0}};
+        double result = mat.trace();
+        double expected = 42.0;
+
+        if (result == expected) {
+            std::cout << "Test 4 passed." << std::endl;
+        } else {
+            std::cout << "Test 4 failed." << std::endl;
+        }
+    }
+
 }
 
 int main() {
-    test_matrix_multiplication();
+    test_matrix_trace();
     return 0;
 }

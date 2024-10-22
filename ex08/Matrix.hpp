@@ -41,6 +41,7 @@ class Matrix
         void                        scl(const T multiplier);
         Matrix                      mul_mat(const Matrix& other);
         Vector<T>                   mul_vec(const Vector<T>& other);
+        const T                     trace() const;
 
         template<typename U>
         friend ostream &operator<<(ostream &os, const Matrix<U> &matrix);
@@ -328,4 +329,19 @@ Vector<T> Matrix<T>::mul_vec(const Vector<T>& other)
     }
 
     return result.to_vector();
+}
+
+template<typename T>
+const T Matrix<T>::trace() const
+{
+    auto shape = this->get_shape();
+    if (shape.first != shape.second)
+        throw std::runtime_error(RUNTIME_ERROR);
+
+    T result = 0;
+    for (size_t i = 0; i < shape.first; ++i)
+    {
+        result += this->_matrix[i][i];
+    }
+    return result;
 }
