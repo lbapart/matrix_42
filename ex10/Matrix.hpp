@@ -373,11 +373,45 @@ Matrix<T> Matrix<T>::row_echelon() const
     double scalar;
 
     Matrix result(*this);
-    for (size_t i = 0; i < shape.first && shape < shape.second; ++i)
+    for (size_t i = 0; i < shape.first && i < shape.second; ++i)
     {
-        for (size_t j = i + 1; j < shape.first && j < shape.second; ++j)
+        result._put_non_zero_rows_on_top(i, i);
+        for (size_t j = i + 1; j < shape.first; ++j)
         {
-            
+            if (result._matrix[j][i] == 0)
+                continue;
+            scalar = -result._matrix[j][i] / result._matrix[i][i];
+            result._add_row(j, i, scalar);
         }
+    }
+    return result;
+}
+
+template<typename T>
+void Matrix<T>::_put_non_zero_rows_on_top(size_t row, size_t col)
+{
+    size_t first = row;
+    size_t last = this->_matrix.size() - 1;
+
+    while (first < last)
+    {
+        if (this->_matrix[first][col] == 0)
+        {
+            std::swap(this->_matrix[first], this->_matrix[last]);
+            --last;
+        }
+        else
+        {
+            ++first;
+        }
+    }
+}
+
+template<typename T>
+void Matrix<T>::_add_row(size_t affected, size_t to_add, double scalar)
+{
+    for (size_t i = 0; i < this->_matrix[affected].size(); ++i)
+    {
+        this->_matrix[affected][i] += this->_matrix[to_add][i] * scalar; 
     }
 }
