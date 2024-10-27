@@ -47,6 +47,7 @@ class Matrix
         Matrix                      transpose() const;
         Matrix                      row_echelon() const;
         const T                     determinant() const;
+        Matrix                      inverse() const;
 
         template<typename U>
         friend ostream &operator<<(ostream &os, const Matrix<U> &matrix);
@@ -486,4 +487,63 @@ const T Matrix<T>::determinant() const
         return result;
     }
     return result;
+}
+
+template<typename T>
+Matrix<T> Matrix<T>::inverse() const
+{
+    auto shape = this->get_shape();
+    if (shape.first != shape.second)
+        throw std::runtime_error(RUNTIME_ERROR);
+
+    Matrix<T> augmented(shape.first, shape.second * 2);
+
+    // Create the augmented matrix [A | I]
+    for (size_t i = 0; i < shape.first; ++i)
+    {
+        for (size_t j = 0; j < shape.second; ++j)
+        {
+            augmented._matrix[i][j] = this->_matrix[i][j];
+            augmented._matrix[i][j + shape.second] = (i == j) ? 1 : 0;
+        }
+    }
+
+    // Perform Gauss-Jordan elimination
+    for (size_t i = 0; i < shape.first; ++i)
+    {
+        // Make the diagonal contain all 1's
+        T diag_element = augmented._matrix[i][i];
+        if (diag_element == 0)
+            throw std::runtime_error(RUNTIME_ERROR); // Singular matrix
+
+        for (size_t j = 0; j < shape.second * 2; ++j)
+        {
+            augmented._matrix[i][j] /= diag_element;
+        }
+
+        // Make the other rows contain 0's
+        for (size_t k = 0; k < shape.first; ++k)
+        {
+            if (k != i)
+            {
+                T factor = augmented._matrix[k][i];
+                for (size_t j = 0; j < shape.second * 2; ++j)
+                {
+                    augmented._matrix[k][j] -= factor * augmented._matrix[i][j];
+                }
+            }
+        }
+    }
+
+    // Extract the inverse matrix from the augmented matrix
+    Matrix<T> inverse(shape.first, shape.second);
+    for (size_t i = 0; i < shape.first; ++i)
+    {
+        for (size_t j = 0; j < shape.second; ++j)
+        {
+            inverse._matrix[i][j] = augmented._matrix[i][j + shape.second];
+        }
+    }
+
+    return inverse;
 }
