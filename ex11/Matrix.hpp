@@ -46,6 +46,7 @@ class Matrix
         const T                     trace() const;
         Matrix                      transpose() const;
         Matrix                      row_echelon() const;
+        const T                     determinant() const;
 
         template<typename U>
         friend ostream &operator<<(ostream &os, const Matrix<U> &matrix);
@@ -414,4 +415,75 @@ void Matrix<T>::_add_row(size_t affected, size_t to_add, double scalar)
     {
         this->_matrix[affected][i] += this->_matrix[to_add][i] * scalar; 
     }
+}
+
+template<typename T>
+const T Matrix<T>::determinant() const
+{
+    auto shape = this->get_shape();
+    T result = 0;
+    if (shape.first != shape.second)
+        throw std::runtime_error(RUNTIME_ERROR);
+    if (shape.first > 4 || shape.first == 0)
+        throw std:: runtime_error(RUNTIME_ERROR);
+    
+    if (shape.first == 1)
+        return this->_matrix[0][0];
+    if (shape.first == 2)
+        return this->_matrix[0][0] * this->_matrix[1][1] - this->_matrix[0][1] * this->_matrix[1][0];
+    if (shape.first == 3)
+    {
+        Matrix *a = new Matrix({
+            {this->_matrix[1][1], this->_matrix[1][2]},
+            {this->_matrix[2][1], this->_matrix[2][2]}
+        });
+        Matrix *b = new Matrix({
+            {this->_matrix[1][0], this->_matrix[1][2]},
+            {this->_matrix[2][0], this->_matrix[2][2]}
+        });
+        Matrix *c = new Matrix({
+            {this->_matrix[1][0], this->_matrix[1][1]},
+            {this->_matrix[2][0], this->_matrix[2][1]}
+        });
+        result = this->_matrix[0][0] * a->determinant()
+                - this->_matrix[0][1] * b->determinant()
+                + this->_matrix[0][2] * c->determinant();
+        delete a;
+        delete b;
+        delete c;
+        return result;
+    }
+    if (shape.first == 4)
+    {
+        Matrix *a = new Matrix({
+            {this->_matrix[1][1], this->_matrix[1][2], this->_matrix[1][3]},
+            {this->_matrix[2][1], this->_matrix[2][2], this->_matrix[2][3]},
+            {this->_matrix[3][1], this->_matrix[3][2], this->_matrix[3][3]}
+        });
+        Matrix *b = new Matrix({
+            {this->_matrix[1][0], this->_matrix[1][2], this->_matrix[1][3]},
+            {this->_matrix[2][0], this->_matrix[2][2], this->_matrix[2][3]},
+            {this->_matrix[3][0], this->_matrix[3][2], this->_matrix[3][3]}
+        });
+        Matrix *c = new Matrix({
+            {this->_matrix[1][0], this->_matrix[1][1], this->_matrix[1][3]},
+            {this->_matrix[2][0], this->_matrix[2][1], this->_matrix[2][3]},
+            {this->_matrix[3][0], this->_matrix[3][1], this->_matrix[3][3]}
+        });
+        Matrix *d = new Matrix({
+            {this->_matrix[1][0], this->_matrix[1][1], this->_matrix[1][2]},
+            {this->_matrix[2][0], this->_matrix[2][1], this->_matrix[2][2]},
+            {this->_matrix[3][0], this->_matrix[3][1], this->_matrix[3][2]},
+        });
+        result = this->_matrix[0][0] * a->determinant()
+                - this->_matrix[0][1] * b->determinant()
+                + this->_matrix[0][2] * c->determinant()
+                - this->_matrix[0][3] * d->determinant();
+        delete a;
+        delete b;
+        delete c;
+        delete d;
+        return result;
+    }
+    return result;
 }
