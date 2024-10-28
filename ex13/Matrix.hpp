@@ -48,6 +48,7 @@ class Matrix
         Matrix                      row_echelon() const;
         const T                     determinant() const;
         Matrix                      inverse() const;
+        size_t                      rank() const;
 
         template<typename U>
         friend ostream &operator<<(ostream &os, const Matrix<U> &matrix);
@@ -546,4 +547,31 @@ Matrix<T> Matrix<T>::inverse() const
     }
 
     return inverse;
+}
+
+template<typename T>
+size_t Matrix<T>::rank() const
+{
+    Matrix<T> ref = this->row_echelon();
+    size_t rank = 0;
+    auto shape = ref.get_shape();
+
+    for (size_t i = 0; i < shape.first; ++i)
+    {
+        bool non_zero_row = false;
+        for (size_t j = 0; j < shape.second; ++j)
+        {
+            if (ref._matrix[i][j] != 0)
+            {
+                non_zero_row = true;
+                break;
+            }
+        }
+        if (non_zero_row)
+        {
+            ++rank;
+        }
+    }
+
+    return rank;
 }
